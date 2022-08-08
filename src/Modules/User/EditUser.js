@@ -1,9 +1,118 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from "react-router-dom";
+// import { clearCookie } from '../../utils/cookieUtils';
+import * as actions from "./_redux/EditUserAction";
+// import { DASHBOARD } from '../../Data/routesURLs';
+// import { useDispatch, shallowEqual, useSelector } from 'react-redux'
 
-const EditUser = () => {
+// const ACCESS_TOKEN = "TodoAccessToken";
+const user = localStorage.getItem("userName");
+
+const Login = () => {
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  // const [user, setUser] = useState("")
+  const [password, setPassword] = useState("")
+  // const [userValidate, setUserValidate] = useState()
+  const [passwordValidate, setpasswordValidate] = useState()
+  // const [buttonDisabled, setButtonDisabled] = useState(false);
+
+  // const validateUser = (usr) => {
+  //   // eslint-disable-next-line
+  //   if (usr.length == "") {
+  //     setUserValidate("Plesae enter UserName")
+
+  //   } else {
+  //     setUserValidate("");
+  //   }
+  // }
+
+  const validatePassword = (pass) => {
+    // eslint-disable-next-line
+    if (pass.length == "") {
+      setpasswordValidate("Plesae enter Password")
+
+    } else if (pass.length < 4) {
+      setpasswordValidate("Minimum 4 char required")
+
+    }
+    else {
+      setpasswordValidate("");
+    }
+  }
+
+  const handleLogin = async () => {
+    // if (userValidate == "" && passwordValidate == "") {
+      // eslint-disable-next-line
+    if (passwordValidate == "") {
+
+      // setButtonDisabled(true);
+      let data = { user, password };
+      await dispatch(actions.editUser(data));
+      // clearCookie(ACCESS_TOKEN);
+      // localStorage.removeItem("userName");
+      navigate("/login");
+
+    } else {
+      // validateUser(user)
+      validatePassword(password)
+    }
+  }
+
+  // const { currentState } = useSelector(
+  //     (state) => ({ currentState: state.loginCredentials }),
+  //     shallowEqual
+  // );
+
+  // const { singleEntity } = currentState;
+
+  // const handleGetToken = (e) => {
+  //     console.log(singleEntity);
+  // }
+
   return (
-    <div>EditUser</div>
+    <>
+      <div className="container pt-5">
+        <form className="form">
+          <div className="row p-2 justify-content-center">
+            <div className="col-4">
+              <input
+                type="text" value={user} onChange={(e) => {
+                  // setUser(e.target.value)
+                  // validateUser(e.target.value)
+                }} className=" w-100 form-control" placeholder="User Name" maxLength="10" disabled/>
+              {/* {// eslint-disable-next-line
+                userValidate == "" ? null :
+                  <p style={{ color: "red" }}>{userValidate}</p>
+              } */}
+            </div>
+          </div>
+          <div className="row p-2 justify-content-center">
+            <div className="col-4">
+              <input type="password" value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value)
+                  validatePassword(e.target.value)
+                }} className="w-100 form-control" placeholder="Password" />
+              {// eslint-disable-next-line
+                passwordValidate == "" ? null : (
+                  <p style={{ color: "red" }}>{passwordValidate}</p>
+                )}
+            </div>
+          </div>
+          <div className="row p-2 justify-content-center">
+            <div className="col-4 text-center">
+              <button type="button" className="btn btn-primary btn-border-radius w-75 " onClick={handleLogin} >
+                Update
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </>
   )
 }
 
-export default EditUser
+export default Login

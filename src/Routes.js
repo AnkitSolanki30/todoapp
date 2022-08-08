@@ -1,18 +1,21 @@
 import React from 'react'
 
-import { Route, Routes, Navigate } from "react-router-dom";
-import { OnlyPublicAuth, RequireAuth, RoleBaseRoute } from './base/RequirAuth';
+import { Route, Routes } from "react-router-dom";
+// import { Navigate } from "react-router-dom";
+
+import { OnlyPublicAuth, RequireAuth } from './base/RequirAuth';
+// import { RoleBaseRoute } from './base/RequirAuth';
+
+
+// import { clearCookie } from './utils/cookieUtils';
+// import { ADMIN_DASHBOARD, AUTH, DASHBOARD, USER_DASHBOARD } from './Data/routesURLs';
+
 import { AdminRoutes } from './Modules/Admin/AdminRoutes';
-
-import { clearCookie } from './utils/cookieUtils';
-import { ADMIN_DASHBOARD, AUTH, DASHBOARD, USER_DASHBOARD } from './Data/routesURLs';
-
 import Login from './Authentication/Login/Login'
 import Signup from './Authentication/Signup/Signup'
 import NotFound from './Modules/NotFound/NotFound';
-import { AdminPage } from './Modules/Admin/Admin';
 
-const ACCESS_TOKEN = "TodoAccessToken";
+// const ACCESS_TOKEN = "TodoAccessToken";
 
 // function RedirectToRespetiveDashboard() {
 //     const permittedRoles = localStorage.getItem("user");
@@ -41,21 +44,19 @@ export function AppRoutes() {
     return (
         <Routes>
             <Route path="/login" element={
-                <OnlyPublicAuth redirectTo={DASHBOARD}>
+                <OnlyPublicAuth redirectTo={"/"}> 
+                {/* replace / with DASHBOARD */}
                     <Login />
-                    {console.log("Route Login")}
                 </OnlyPublicAuth>
             } />
             <Route path="/signup" element={
-                <OnlyPublicAuth redirectTo={DASHBOARD}>
+                <OnlyPublicAuth redirectTo={"/"}>
                     <Signup />
-                    {console.log("Route Signup")}
                 </OnlyPublicAuth>
             } />
-            <Route path="/" element={
+            <Route path="*" element={
                 <RequireAuth redirectTo="/login">
-                    <AdminPage></AdminPage>
-                        <div>NOT BUILD YET</div>
+                    <AdminRoutes></AdminRoutes>
                 </RequireAuth>
             } />
             {/* <Route path={`${USER_DASHBOARD}/*`} element={

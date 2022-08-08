@@ -9,11 +9,6 @@ import { AppRoutes } from './Routes';
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
-import { clearCookie } from './utils/cookieUtils';
-
-const ACCESS_TOKEN = "TodoAccessToken";
-
-
 function App() {
 
   return (
