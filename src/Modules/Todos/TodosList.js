@@ -4,7 +4,8 @@ import Paginations from '../../base/Paginations/Paginations'
 import TodosItem from './TodosItem'
 import * as action from './_redux/TodosAction'
 import Pagination from 'react-bootstrap/Pagination';
-
+import Paginations2 from '../../base/Paginations/Paginations2'
+import { Form } from 'react-bootstrap'
 
 const TodosList = () => {
 
@@ -14,18 +15,22 @@ const TodosList = () => {
     const totalTodosPage = useSelector(state => state.todosListInformation.totalPage)
     const [sortData, setSortData] = useState("")
     const [order, setOrder] = useState(true);
-    const [handle, setHandle] = useState("0")
+    const [handleChecked, setHandleChecked] = useState("0")
+    const [handleContent, setHandleContent] = useState("0")
+    const [handleCreatedAt, setHandleCreatedAt] = useState("0")
     const [pageCount, setPageCount] = useState(1)
-    const [limitCount, setLimitCount] = useState(10)
+    const [limitCount, setLimitCount] = useState(5)
+    const [maxPageLimit, setMaxPageLimit] = useState(5);
+    const [minPageLimit, setMinPageLimit] = useState(1);
 
-    console.log("totalTodosCount", totalTodosCount);
-    console.log("totalTodosPage", totalTodosPage);
-    console.log("todos", todos);
+    // console.log("totalTodosCount", totalTodosCount);
+    // console.log("totalTodosPage", totalTodosPage);
+    // console.log("todos", todos);
 
     useEffect(() => {
         getList()
         return () => { };
-    }, [sortData, pageCount])
+    }, [sortData, pageCount, limitCount])
 
     const getList = () => {
         let od = "";
@@ -36,29 +41,14 @@ const TodosList = () => {
         dispatch(action.fetchTodos(url));
     }
 
-    // const handleSort = (param) => {
-    //     console.log("handle", handle);
-    //     console.log(param);
-    //     if (handle === "0") {
-    //         setOrder(false)
-    //         setHandle("1")
-    //     } else {
-    //         setOrder(true)
-    //         setHandle("0")
-    //     }
-    //     setSortData(param)
-    //     getList()
-    //     return(param)
-    // }
-
     const handleCheckedSort = () => {
-        console.log("handle", handle);
-        if (handle === "0") {
+        console.log("handleChecked:", handleChecked);
+        if (handleChecked === "0") {
             setOrder(false)
-            setHandle("1")
+            setHandleChecked("1")
         } else {
             setOrder(true)
-            setHandle("0")
+            setHandleChecked("0")
         }
         setSortData("checked")
         getList()
@@ -66,13 +56,13 @@ const TodosList = () => {
     }
 
     const handleTodoSort = () => {
-        console.log("handle", handle);
-        if (handle === "0") {
+        console.log("handle", handleContent);
+        if (handleContent === "0") {
             setOrder(false)
-            setHandle("1")
+            setHandleContent("1")
         } else {
             setOrder(true)
-            setHandle("0")
+            setHandleContent("0")
         }
         setSortData("content")
         getList()
@@ -80,13 +70,13 @@ const TodosList = () => {
     }
 
     const handleDateSort = () => {
-        console.log("handle", handle);
-        if (handle === "0") {
+        console.log("handle", handleCreatedAt);
+        if (handleCreatedAt === "0") {
             setOrder(false)
-            setHandle("1")
+            setHandleCreatedAt("1")
         } else {
             setOrder(true)
-            setHandle("0")
+            setHandleCreatedAt("0")
         }
         setSortData("createdAt")
         getList()
@@ -99,7 +89,36 @@ const TodosList = () => {
             <Pagination.Item onClick={() => { setPageCount(number) }} key={number} active={number === pageCount}>
                 {number}
             </Pagination.Item>,
-        );
+        )
+    }
+   
+    const handleFirst = () => {
+        setPageCount(1)
+    }
+    
+    const handlePrev = () => {
+        if ((pageCount - 1) % limitCount === 1) {
+            setMaxPageLimit(maxPageLimit - limitCount);
+            setMinPageLimit(minPageLimit - limitCount);
+        }
+        setPageCount(prev => prev - 1)
+    }
+    
+    const handleNext = () => {
+        if (pageCount + 1 > maxPageLimit) {
+            setMaxPageLimit(maxPageLimit + limitCount);
+            setMinPageLimit(minPageLimit + limitCount);
+        }
+        setPageCount(prev => prev + 1)
+    }
+    
+    const handleLast = () => {
+        setPageCount(totalTodosPage)
+    }
+    
+    const handelSelectChange = (e) => {
+        setPageCount(1);
+        setLimitCount(e.target.value);
     }
 
     return (
@@ -121,7 +140,25 @@ const TodosList = () => {
                 <tfoot >
                     <tr>
                         <td colSpan="4">
-                            <Paginations items={items} />
+                            <div className='row'>
+                                <div className='col-10'>
+                                    {/* <Paginations items={items} /> */}
+                                    <Paginations2 items={items} pageCount={pageCount} handleFirst1={handleFirst} handlePrev1={handlePrev} handleLast1={handleLast} handleNext1={handleNext} maxPageLimit={maxPageLimit} minPageLimit={minPageLimit} />
+                                </div>
+                                <div className='col-2'>
+                                    <div>
+                                        {/* <label>Rows per page:</label> */}
+                                        <Form.Group>
+                                            <Form.Select style={{ width: "5em" }} onChange={handelSelectChange}>
+                                                <option value="5">5</option>
+                                                <option value="10">10</option>
+                                                <option value="15">15</option>
+                                                <option value="20">20</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 </tfoot>

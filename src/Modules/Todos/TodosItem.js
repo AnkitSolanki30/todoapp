@@ -10,8 +10,6 @@ const TodosItem = (props) => {
     const [validateAddTodo, setValidateAddTodo] = useState()
     const [isEditing, setIsEditing] = useState(false)
     const dispatch = useDispatch();
-
-    // console.log(moment(props.todo.createdAt).utc().format('YYYY-MM-DD'));
     
     const handleChecked = () => {
         let content = todo;

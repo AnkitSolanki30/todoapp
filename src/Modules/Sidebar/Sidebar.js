@@ -23,7 +23,7 @@ const Sidebar = () => {
 
   return (
     <>
-      <div className="h-100vh">
+      <div className="h-100vh position-fixed">
         <div className="listWrapper  d-flex flex-column ms-3 my-3 overflow-auto">
           <ul className="sidebarItems">
             <li className="sidebarheader">
