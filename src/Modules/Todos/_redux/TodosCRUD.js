@@ -9,7 +9,11 @@ export function createTodo(data) {
 
 //Get All Todos
 export function getTodos(url) {
-    return instance.get(`${window.$BASE_URL}${todos_URL}${url}`);
+    if (url) {
+        return instance.get(`${window.$BASE_URL}${todos_URL}${url}`);
+    } else {
+        return instance.get(`${window.$BASE_URL}${todos_URL}`);
+    }
 }
 
 //Get Single Todo by ID

@@ -20,14 +20,10 @@ $backgroundColorForButton: yellow;
   width: $persantage;
 }
 
-.cellWidth {
-  width:60%;
-}
-
-.navbarWidth {
-  width: $persantage;
-}
-
 .pointer {
   cursor: pointer;
+}
+
+.centerAlign {
+  text-align: center;
 }

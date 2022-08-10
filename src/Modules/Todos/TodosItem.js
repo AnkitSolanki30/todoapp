@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import * as action from './_redux/TodosAction'
 import moment from 'moment'
@@ -45,17 +45,11 @@ const TodosItem = (props) => {
         const newTodo = rows.filter((todos) => { return todos._id !== id })
         setTodo(newTodo)
     }
-
-    // const deleteTableRows = (index)=>{
-    //     const rows = [...todo];
-    //     rows.splice(index);
-    //     setTodo(rows);
-    // }
-
+    
     const handleDelete = (id) => {
         newTodoAfterDelete(id)
         dispatch(action.deleteTodos(props.todo._id));
-        // deleteTableRows(props.todo._id)
+        props.setPageCount(1)
     };
 
     const handleSubmit = (e) => {
@@ -116,7 +110,7 @@ const TodosItem = (props) => {
                     <td>
                         <input type='checkbox' className='pointer' onChange={handleChecked} checked={tik} />
                     </td>
-                    <td >
+                    <td style={{ textAlign: "left" }}>
                         <span onClick={handleChecked} className={`${tik ? 'completed' : 'not-completed'} pointer`}>
                             {todo ?? ""}
                         </span>

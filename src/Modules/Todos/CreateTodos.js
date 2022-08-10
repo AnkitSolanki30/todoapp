@@ -12,7 +12,6 @@ const CreateTodos = () => {
         // eslint-disable-next-line
         if (todoval.length == "") {
             setValidateAddTodo("Plesae enter TODO")
-
         } else {
             setValidateAddTodo("");
         }
@@ -26,6 +25,7 @@ const CreateTodos = () => {
             let data = { content, checked };
             dispatch(action.createTodos(data));
             setAddTodo("");
+            dispatch(action.fetchTodos());
         } else {
             validateTodoTaxtBox(addTodo);
         }
@@ -40,26 +40,22 @@ const CreateTodos = () => {
                     </div>
                 </div>
 
-                <form className="form">
-                    <div className="row p-2 justify-content-center">
-                        <div className="col-8">
-                            <input
-                                type="text" value={addTodo} onChange={(e) => {
-                                    setAddTodo(e.target.value.trimStart())
-                                    validateTodoTaxtBox(e.target.value.trimStart())
-                                }} className=" w-100 form-control" placeholder="Add ToDo" />
-                            {// eslint-disable-next-line
-                                validateAddTodo == "" ? null :
-                                    <p style={{ color: "red" }}>{validateAddTodo}</p>
-                            }
-                        </div>
+                <form className="form row p-2">
+                    <div className="col-8">
+                        <input
+                            type="text" value={addTodo} onChange={(e) => {
+                                setAddTodo(e.target.value.trimStart())
+                                validateTodoTaxtBox(e.target.value.trimStart())
+                            }} className=" w-100 form-control" placeholder="Add ToDo" />
+                        {// eslint-disable-next-line
+                            validateAddTodo == "" ? null :
+                                <p style={{ color: "red" }}>{validateAddTodo}</p>
+                        }
                     </div>
-                    <div className="row p-2 justify-content-center">
-                        <div className="col-2 text-center">
-                            <button type="button" className="btn btn-primary btn-border-radius w-75 " onClick={handleCreateTask} >
-                                Submit
-                            </button>
-                        </div>
+                    <div className="col-2 text-center">
+                        <button type="button" className="btn btn-primary btn-border-radius w-75 " onClick={handleCreateTask} >
+                            Submit
+                        </button>
                     </div>
                 </form>
             </div>
