@@ -14,80 +14,58 @@ const TodosList = () => {
     const todos = useSelector(state => state.todosListInformation.todos)
     const totalTodosCount = useSelector(state => state.todosListInformation.totalCount)
     const totalTodosPage = useSelector(state => state.todosListInformation.totalPage)
-    const [sortData, setSortData] = useState("")
     const [searchText, setSearchText] = useState("")
     const [order, setOrder] = useState(true);
-    const [handleChecked, setHandleChecked] = useState("0")
-    const [handleContent, setHandleContent] = useState("0")
-    const [handleCreatedAt, setHandleCreatedAt] = useState("0")
+    const [sortByState, setSortByState] = useState("")
     const [pageCount, setPageCount] = useState(1)
-    const [limitCount, setLimitCount] = useState(5)
-    const [maxPageLimit, setMaxPageLimit] = useState(5);
-    const [minPageLimit, setMinPageLimit] = useState(1);
+    const [limitCount, setLimitCount] = useState(20)
 
-    // console.log("totalTodosCount", totalTodosCount);
-    // console.log("totalTodosPage", totalTodosPage);
-    // console.log("todos", todos);
+    console.log(totalTodosPage)
 
     useEffect(() => {
         getList()
         return () => { };
-    }, [handleChecked, handleContent, handleCreatedAt, pageCount, limitCount, totalTodosCount])
+    }, [pageCount, limitCount, sortByState, order])
 
     useEffect(() => {
         const timer = setTimeout(() => {
-        getList()
-        }, 2000);
+            getList()
+        }, 1000);
         return () => clearTimeout(timer);
-      }, [searchText]);
+    }, [searchText]);
 
     //API call for get todos list, (sorted, pages, limits, searched) data 
     const getList = () => {
-        let od = "";
+        let od = "+";
         if (!order) {
             od = "-";
-        }
-        let url = `?sortBy=${od}${sortData}&page=${pageCount}&limit=${limitCount}`;
-        if (searchText) {
-            url = `?sortBy=${od}${sortData}&page=${pageCount}&limit=${limitCount}&content=${searchText}`;
         } else {
-            url = `?sortBy=${od}${sortData}&page=${pageCount}&limit=${limitCount}`;
+            od = ""
+        }
+        let url = `?sortBy=${od}${sortByState}&page=${pageCount}&limit=${limitCount}`;
+        if (searchText) {
+            url = `?sortBy=${od}${sortByState}&page=${pageCount}&limit=${limitCount}&content=${searchText}`;
+        } else {
+            url = `?sortBy=${od}${sortByState}&page=${pageCount}&limit=${limitCount}`;
         }
         dispatch(action.fetchTodos(url));
     }
 
     //sort functions
-    const handleCheckedSort = () => {
-        if (handleChecked === "0") {
-            setOrder(false)
-            setHandleChecked("1")
+    const sortByFunction = (id) => {
+        setSortByState(id)
+        if (id) {
+            setOrder(!order)
         } else {
+            setSortByState(id)
             setOrder(true)
-            setHandleChecked("0")
         }
-        setSortData("checked")
     }
-
-    const handleTodoSort = () => {
-        if (handleContent === "0") {
-            setOrder(false)
-            setHandleContent("1")
-        } else {
-            setOrder(true)
-            setHandleContent("0")
-        }
-        setSortData("content")
-    }
-
-    const handleDateSort = () => {
-        if (handleCreatedAt === "0") {
-            setOrder(false)
-            setHandleCreatedAt("1")
-        } else {
-            setOrder(true)
-            setHandleCreatedAt("0")
-        }
-        setSortData("createdAt")
+    
+    //delete function for individual todo
+    const onDelete = () => {
+        setPageCount(1)
+        getList();
     }
 
     //pagination
@@ -105,18 +83,10 @@ const TodosList = () => {
     }
 
     const handlePrev = () => {
-    //     if ((pageCount - 1) % limitCount === 1) {
-    //         setMaxPageLimit(maxPageLimit - limitCount);
-    //         setMinPageLimit(minPageLimit - limitCount);
-    //     }
         setPageCount(prev => prev - 1)
     }
 
     const handleNext = () => {
-        // if (pageCount + 1 > maxPageLimit) {
-        //     setMaxPageLimit(maxPageLimit + limitCount);
-        //     setMinPageLimit(minPageLimit + limitCount);
-        // }
         setPageCount(prev => prev + 1)
     }
 
@@ -136,26 +106,41 @@ const TodosList = () => {
         setSearchText(childData)
     }
 
+    const handleResetAll = () => {
+        setOrder(true)
+        setSortByState("")
+        setPageCount(1)
+        setLimitCount(5)
+        setSearchText("")
+        setSearchText("")
+    }
+
     return (
         <div className='container'>
 
             {/* search todos */}
-            <SearchTodos parentCallBack={handleCallback} setOrder={setOrder} setSortData={setSortData} setPageCount={setPageCount} setLimitCount={setLimitCount} setSearchText1={setSearchText}/>
+            <SearchTodos parentCallBack={handleCallback} handleResetAll={handleResetAll} />
             <div>
                 <table className='table tableWidth overflow-auto table-bordered centerAlign'>
                     <thead>
                         <tr>
-                            <td style={{ width: "82px"}} className='pointer' onClick={handleCheckedSort}>Checked</td>
-                            <td className='pointer' onClick={handleTodoSort}>ToDoList</td>
-                            <td style={{ width: "110px" }} className='pointer' onClick={handleDateSort}>Date</td>
-                            <td style={{ width: "170px"}}>Actions</td>
+                            <td style={{ width: "82px" }} className='pointer' id="checked" onClick={(e) => {
+                                sortByFunction(e.target.id)
+                            }}>Checked</td>
+                            <td className='pointer' id="content" onClick={(e) => {
+                                sortByFunction(e.target.id)
+                            }}>ToDoList</td>
+                            <td style={{ width: "110px" }} className='pointer' id="createdAt" onClick={(e) => {
+                                sortByFunction(e.target.id)
+                            }}>Date</td>
+                            <td style={{ width: "170px" }}>Actions</td>
                         </tr>
                     </thead>
 
                     {/* todos table row creation */}
                     <tbody>
                         {todos.map((todoItemList) => (
-                            <TodosItem key={todoItemList._id} todo={todoItemList} setPageCount={setPageCount} />
+                            <TodosItem key={todoItemList._id} todo1={todoItemList} onDelete={onDelete} />
                         ))}
                     </tbody>
                     <tfoot>
@@ -166,14 +151,14 @@ const TodosList = () => {
                                     {/* Pagination call */}
                                     <div className='col-10'>
                                         {/* <Paginations items={items} /> */}
-                                        <Paginations2 items={items} pageCount={pageCount} handleFirst1={handleFirst} handlePrev1={handlePrev} handleLast1={handleLast} handleNext1={handleNext} maxPageLimit={maxPageLimit} minPageLimit={minPageLimit} />
+                                        <Paginations2 items={items} pageCount={pageCount} totalTodosPage={totalTodosPage} handleFirst1={handleFirst} handlePrev1={handlePrev} handleNext1={handleNext} handleLast1={handleLast} />
                                     </div>
 
                                     {/* Selection call */}
                                     <div className='col-2'>
                                         {/* <label>Rows per page:</label> */}
                                         <Form.Group>
-                                            <Form.Select style={{ width: "5em" }} onChange={handelSelectChange}>
+                                            <Form.Select defaultValue={limitCount} style={{ width: "5em" }} onChange={handelSelectChange}>
                                                 <option value="5">5</option>
                                                 <option value="10">10</option>
                                                 <option value="15">15</option>

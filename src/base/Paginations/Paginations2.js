@@ -3,7 +3,7 @@ import Pagination from 'react-bootstrap/Pagination';
 
 const Paginations2 = (props) => {
 
-    const { items, pageCount, handleFirst1, handlePrev1, handleLast1, handleNext1, maxPageLimit, minPageLimit } = props
+    const { items, pageCount, totalTodosPage, handleFirst1, handlePrev1, handleLast1, handleNext1} = props
 
     const handleFirst = () => {
         handleFirst1();
@@ -30,8 +30,8 @@ const Paginations2 = (props) => {
                     {/* {minPageLimit >= 1 ? "" : <Pagination.Ellipsis />} */}
                     {items}
                     {/* {items.length > maxPageLimit ? "" : <Pagination.Ellipsis />} */}
-                    <Pagination.Next onClick={handleNext} disabled={pageCount === items.length} />
-                    <Pagination.Last onClick={handleLast} disabled={pageCount === items.length} />
+                    <Pagination.Next onClick={handleNext} disabled={pageCount === items.length || totalTodosPage === 0&&1} />
+                    <Pagination.Last onClick={handleLast} disabled={pageCount === items.length || totalTodosPage === 0&&1} />
                 </Pagination>
             </>
         </div>

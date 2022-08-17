@@ -5,23 +5,23 @@ import moment from 'moment'
 
 const TodosItem = (props) => {
 
-    const [todo, setTodo] = useState(props.todo.content)
-    const [tik, setTik] = useState(props.todo.checked)
+    const [todo, setTodo] = useState(props.todo1.content)
+    const [tik, setTik] = useState(props.todo1.checked)
     const [validateAddTodo, setValidateAddTodo] = useState()
     const [isEditing, setIsEditing] = useState(false)
     const dispatch = useDispatch();
-    
+
     const handleChecked = () => {
         let content = todo;
         if (tik) {
             let checked = "false";
             let data = { content, checked };
-            dispatch(action.editTodos(data, props.todo._id));
+            dispatch(action.editTodos(data, props.todo1._id));
             setTik(!tik);
         } else {
             let checked = "true";
             let data = { content, checked };
-            dispatch(action.editTodos(data, props.todo._id));
+            dispatch(action.editTodos(data, props.todo1._id));
             setTik(!tik);
         }
     };
@@ -45,11 +45,11 @@ const TodosItem = (props) => {
         const newTodo = rows.filter((todos) => { return todos._id !== id })
         setTodo(newTodo)
     }
-    
+
     const handleDelete = (id) => {
         newTodoAfterDelete(id)
-        dispatch(action.deleteTodos(props.todo._id));
-        props.setPageCount(1)
+        dispatch(action.deleteTodos(id));
+        props.onDelete();
     };
 
     const handleSubmit = (e) => {
@@ -59,7 +59,7 @@ const TodosItem = (props) => {
             let content = todo;
             let checked = tik;
             let data = { content, checked };
-            dispatch(action.editTodos(data, props.todo._id));
+            dispatch(action.editTodos(data, props.todo1._id));
             setIsEditing(false);
             // eslint-disable-next-line
         } else if (todo == "") {
@@ -71,7 +71,7 @@ const TodosItem = (props) => {
 
     const handleCancel = () => {
         setEditingState(false)
-        setTodo(props.todo.content);
+        setTodo(props.todo1.content);
     };
 
     return (
@@ -99,7 +99,7 @@ const TodosItem = (props) => {
                         </form>
                     </td>
                     <td>
-                        {moment(props.todo.createdAt).utc().format('YYYY-MM-DD')}
+                        {moment(props.todo1.createdAt).utc().format('YYYY-MM-DD')}
                     </td>
                     <td>
                         <button className='btn btn-warning mx-2' onClick={handleSubmit} type='submit'>Save</button>
@@ -116,11 +116,11 @@ const TodosItem = (props) => {
                         </span>
                     </td>
                     <td>
-                    {moment(props.todo.createdAt).utc().format('YYYY-MM-DD')}
+                        {moment(props.todo1.createdAt).utc().format('YYYY-MM-DD')}
                     </td>
                     <td className='mb-2'>
                         <button className='btn btn-success m-1' onClick={() => { setEditingState(true) }}>Edit</button>
-                        <button className='btn btn-danger' onClick={() => handleDelete(props.todo._id)}>Delete</button>
+                        <button className='btn btn-danger' onClick={() => handleDelete(props.todo1._id)}>Delete</button>
                     </td>
                 </>
             )}

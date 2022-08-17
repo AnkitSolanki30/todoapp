@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const SearchTodos = ({ parentCallBack, setOrder, setSortData, setPageCount, setLimitCount, setSearchText1 }) => {
+const SearchTodos = ({ parentCallBack, handleResetAll }) => {
 
     const [searchText, setSearchText] = useState("")
 
@@ -9,12 +9,7 @@ const SearchTodos = ({ parentCallBack, setOrder, setSortData, setPageCount, setL
     }
 
     const handleReset = () => {
-        setOrder(true)
-        setSortData("")
-        setPageCount(1)
-        setLimitCount(5)
-        setSearchText1("")
-        setSearchText("")
+        handleResetAll()
     }
 
     return (
@@ -28,8 +23,8 @@ const SearchTodos = ({ parentCallBack, setOrder, setSortData, setPageCount, setL
                         }} className=" form-control" placeholder="Search Your Todos" />
                 </div>
                 <div className="col-6">
-                        <button type="button" onClick={handleSearch} className="btn btn-primary btn-border-radius w-20 mx-5">Search</button>
-                        <button type="button" onClick={handleReset} className="btn btn-primary btn-border-radius w-20 ">Reset</button>
+                    <button type="button" onClick={handleSearch} className="btn btn-primary btn-border-radius w-20 mx-5">Search</button>
+                    <button type="button" onClick={handleReset} className="btn btn-primary btn-border-radius w-20 ">Reset</button>
                 </div>
             </form>
         </div>

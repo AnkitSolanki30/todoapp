@@ -29,7 +29,6 @@ const TodosSlice = createSlice({
         createdResponse:(state, actions) => {
             const { createdTodos } = actions.payload;
             state.singleEntity = createdTodos;
-            console.log("payload Created TODOS",actions.payload)
         }
     }
 })
